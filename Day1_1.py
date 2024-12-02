@@ -1,6 +1,5 @@
 
-
-if __name__ == "__main__":
+def read_list():
     left_list = []
     right_list = []
     with open("input/Day1.txt") as f:
@@ -10,6 +9,10 @@ if __name__ == "__main__":
             left_list.append(int(left))
             right_list.append(int(right))
 
+    return left_list, right_list
+
+# Part 1 Solution
+def list_difference(left_list, right_list):
     left_list.sort()
     right_list.sort()
 
@@ -19,3 +22,8 @@ if __name__ == "__main__":
         total_difference += difference
 
     print(total_difference)
+
+
+if __name__ == "__main__":
+    left_list, right_list = read_list()
+    list_difference(left_list, right_list)
