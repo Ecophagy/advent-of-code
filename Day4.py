@@ -39,10 +39,27 @@ def find_xmas(grid):
                                             xmas_found += 1
                                             for k in range(4):
                                                 xmas_coords.append((i+row_increment * k,j+column_increment*k))
-
                             except IndexError:
                                 continue
     return xmas_found, xmas_coords
+
+def find_x_mas(grid):
+    x_mas_found = 0
+
+    # -1 to not check when the centre is on the edge of grid
+    for i in range(1, len(grid) - 1):
+        for j in range(1, len(grid[0]) - 1):
+            if grid[i][j] == "A":
+                try:
+                    if ((grid[i - 1][j - 1] == "M" and grid[i + 1][j + 1] == "S") or
+                        (grid[i - 1][j - 1] == "S" and grid[i + 1][j + 1] == "M")) and \
+                        ((grid[i + 1][j - 1] == "M" and grid[i - 1][j + 1] == "S") or
+                         (grid[i + 1][j - 1] == "S" and grid[i - 1][j + 1] == "M")):
+                            x_mas_found += 1
+                except IndexError:
+                    continue
+    return x_mas_found
+
 
 def print_grid(grid, coords):
     for i in range(0, len(grid)):
@@ -57,5 +74,5 @@ def print_grid(grid, coords):
 if __name__ == "__main__":
     input = read_input()
     count, coords = find_xmas(input)
-    print_grid(input, coords)
+    count = find_x_mas(input)
     print(count)
