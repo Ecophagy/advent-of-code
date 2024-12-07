@@ -15,7 +15,7 @@ class Collision:
 
 def read_input():
     grid = []
-    with open("input/Day6_example.txt") as f:
+    with open("input/Day6.txt") as f:
         index = 0
         for line in f.readlines():
             row = []
@@ -111,22 +111,24 @@ if __name__ == "__main__":
                 # We can't put an obstacle at the guard's starting location
                 continue
             else:
-                if column == 3 and row == 6:
-                    pass
-                grid[row][column] = "#"
-                guard_row = start_guard_row
-                guard_column = start_guard_column
-                guard_orientation = orientation.NORTH
-
-                if move_guard(grid, guard_row, guard_column, guard_orientation):
-                    # Guard escaped!
-                    print(f"Guard escaped!")
+                if grid[row][column] == "#":
+                    # Skip existing obstacles, since this will not change the map and add a loop
+                    continue
                 else:
-                    # Guard stuck in loop
-                    loops += 1
-                    print("Guard stuck in loop")
-                # Remove the obstacle we tried
-                grid[row][column] = "."
+                    grid[row][column] = "#"
+                    guard_row = start_guard_row
+                    guard_column = start_guard_column
+                    guard_orientation = orientation.NORTH
+
+                    if move_guard(grid, guard_row, guard_column, guard_orientation):
+                        # Guard escaped!
+                        print(f"Guard escaped!")
+                    else:
+                        # Guard stuck in loop
+                        loops += 1
+                        print("Guard stuck in loop")
+                    # Remove the obstacle we tried
+                    grid[row][column] = "."
 
     print(f"Total loops: {loops}")
 
