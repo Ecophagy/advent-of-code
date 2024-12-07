@@ -27,8 +27,8 @@ def read_input():
     return grid
 
 def find_start_position(grid):
-    for column in range(0, len(grid)):
-        for row in range(0, len(grid[0])):
+    for row in range(0, len(grid)):
+        for column in range(0, len(grid[0])):
             if grid[column][row] == "^":
                 return column, row
 
@@ -86,24 +86,47 @@ def move_guard(grid, guard_column, guard_row, guard_orientation):
 
 if __name__ == "__main__":
     grid = read_input()
-    guard_column, guard_row = find_start_position(grid)
-    grid[guard_column][guard_row] = "X" # Mark starting position
-    guard_orientation = orientation.NORTH
-    loops = 0
+    start_guard_column, start_guard_row = find_start_position(grid)
+    grid[start_guard_column][start_guard_row] = "X" # Mark starting position
 
-    # TODO: try every possible obstacle location
+    # Part 1
+    guard_column = start_guard_column
+    guard_row = start_guard_row
+    guard_orientation = orientation.NORTH
     if move_guard(grid, guard_column, guard_row, guard_orientation):
         # Guard escaped!
         # Count Xs in grid
         spaces_covered = 0
-        for column in range(0, len(grid)):
-            for row in range(0, len(grid[0])):
-                if grid[column][row] == "X":
+        for count_column in range(0, len(grid)):
+            for count_row in range(0, len(grid[0])):
+                if grid[count_column][count_row] == "X":
                     spaces_covered += 1
-        print(spaces_covered)
-    else:
-        # Guard stuck in loop
-        loops += 1
+        print(f"Guard escaped! Spaces covered: {spaces_covered}")
 
-    print(loops)
+    # Part 2
+    loops = 0
+    for column in range(0, len(grid)):
+        for row in range(0, len(grid[0])):
+            if column == start_guard_column and row == start_guard_row:
+                # We can't put an obstacle at the guard's starting location
+                continue
+            else:
+                if column == 3 and row == 6:
+                    pass
+                grid[column][row] = "#"
+                guard_column = start_guard_column
+                guard_row = start_guard_row
+                guard_orientation = orientation.NORTH
+
+                if move_guard(grid, guard_column, guard_row, guard_orientation):
+                    # Guard escaped!
+                    print(f"Guard escaped!")
+                else:
+                    # Guard stuck in loop
+                    loops += 1
+                    print("Guard stuck in loop")
+                # Remove the obstacle we tried
+                grid[column][row] = "."
+
+    print(f"Total loops: {loops}")
 
