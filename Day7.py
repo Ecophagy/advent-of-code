@@ -25,14 +25,15 @@ def fix_calibration(calibration):
 
 # Recursively calculate all possible outputs
 def calc(running_total, inputs, index):
-    total_1 = running_total + inputs[index]
-    total_2 = running_total * inputs[index]
+    total_1 = running_total + inputs[index] # Sum operator
+    total_2 = running_total * inputs[index] # Multiply operator
+    total_3 = int(str(running_total) + str(inputs[index])) # Concatenate operator
 
     if index < len(inputs) - 1:
         index += 1
-        return calc(total_1, inputs, index), calc(total_2, inputs, index)
+        return calc(total_1, inputs, index), calc(total_2, inputs, index), calc(total_3, inputs, index)
     else:
-        return total_1, total_2
+        return total_1, total_2, total_3
 
 # Recursively check the nested tuples of possible outputs for the target value
 def check_answer(target, answers):
