@@ -31,6 +31,7 @@ def add_antinode(grid, row, column):
             antinode_location = row, column # Antinode covers existing antenna
     return antinode_location
 
+
 def find_and_place_antinodes(grid, antinodes):
     for row in range(len(grid)):
         for column in range(len(grid[0])):
@@ -44,9 +45,32 @@ def find_and_place_antinodes(grid, antinodes):
                             if grid[pair_row][pair_column] == frequency:
                                 row_difference  = pair_row - row
                                 column_difference = pair_column - column
+                                # Part 1 antinode locations
                                 antinode_locations = [(row - row_difference, column - column_difference),
                                                       (pair_row + row_difference, pair_column + column_difference)]
-                                for location in antinode_locations:
+
+                                # Part 2 node locations
+                                # Are at every space along the line that passes between the two antenna locations
+                                resonant_antinode_locations = []
+
+                                # Line one way
+                                base_row = pair_row
+                                base_column = pair_column
+                                while 0 <= base_row < len(grid) and 0 <= base_column < len(grid[0]):
+                                    base_row += row_difference
+                                    base_column += column_difference
+                                    resonant_antinode_locations.append((base_row, base_column))
+
+                                # Line the other way
+                                base_row = pair_row
+                                base_column = pair_column
+                                while 0 <= base_row < len(grid) and 0 <= base_column < len(grid[0]):
+                                    base_row -= row_difference
+                                    base_column -= column_difference
+                                    resonant_antinode_locations.append((base_row, base_column))
+
+                                # Add and count antinodes
+                                for location in resonant_antinode_locations:
                                     antinode = add_antinode(grid, location[0], location[1])
                                     if antinode is not None and antinode not in antinodes:
                                         antinodes.append(antinode)
@@ -60,7 +84,3 @@ if __name__ == "__main__":
 
     draw_grid(grid)
     print(f"Antinodes: {len(antinodes)}")
-
-
-
-
