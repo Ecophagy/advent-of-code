@@ -34,7 +34,8 @@ def frag(disk):
 
 # Part 2
 def defrag(disk):
-    for j in reversed(range(len(disk))):
+    j = len(disk) - 1
+    while j >= 0:
         if disk[j] != ".":
             file_index = j
             while disk[file_index] == disk[j]:
@@ -58,9 +59,9 @@ def defrag(disk):
                             disk[fill_index] = disk[k]
                             disk[k] = "."
                             fill_index += 1
+                            j -= file_size - 1
                         break
-            # TODO: If no gap is big enough, skip the rest of the file.
-            # TODO: at the moment it will repeat the process with small slices of the file
+            j -= 1
     return disk
 
 
