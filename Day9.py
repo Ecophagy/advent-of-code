@@ -1,6 +1,6 @@
 
 def read_input():
-    with open("input/Day9.txt") as f:
+    with open("input/Day9_example.txt") as f:
         return f.read()
 
 def uncompress(disk_map):
@@ -18,6 +18,7 @@ def uncompress(disk_map):
         file = not file
     return disk
 
+# Part 1
 # By heck this is slow
 def frag(disk):
     for i in range(len(disk)):
@@ -31,6 +32,38 @@ def frag(disk):
                     break
     return disk
 
+# Part 2
+def defrag(disk):
+    for j in reversed(range(len(disk))):
+        if disk[j] != ".":
+            file_index = j
+            while disk[file_index] == disk[j]:
+                file_index -= 1
+            # File is between j-file_index and j
+            file_size = j - file_index
+
+            # Find gap from front
+            for i in range(len(disk)):
+                if disk[i] == ".":
+                    gap_index = i
+                    while gap_index < len(disk) and disk[gap_index] == ".":
+                        gap_index += 1
+                    # Gap is between i and i+gap_index
+                    gap_size = gap_index - i
+
+                    # Is the gap big enough?
+                    if gap_size >= file_size:
+                        fill_index = i
+                        for k in range(file_index + 1, j + 1):
+                            disk[fill_index] = disk[k]
+                            disk[k] = "."
+                            fill_index += 1
+                        break
+            # TODO: If no gap is big enough, skip the rest of the file.
+            # TODO: at the moment it will repeat the process with small slices of the file
+    return disk
+
+
 def calculate_checksum(disk):
     checksum = 0
     for i in range(len(disk)):
@@ -42,6 +75,7 @@ def calculate_checksum(disk):
 if __name__ == "__main__":
     disk_map = read_input()
     uncompressed_disk = uncompress(disk_map)
-    fragged_disk = frag(uncompressed_disk)
-
-    print(f"Checksum: {calculate_checksum(fragged_disk)}")
+    #fragged_disk = frag(uncompressed_disk)
+    defragged_disk = defrag(uncompressed_disk)
+    print(defragged_disk)
+    print(f"Checksum: {calculate_checksum(defragged_disk)}")
