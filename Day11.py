@@ -30,12 +30,11 @@ def blink(stones):
             new_stone_list.append(stone * 2024)
 
         # Add one of these stones for each time it appears in the input
-        for i in range(count):
-            for new_stone in new_stone_list:
-                if new_stone in new_stones:
-                    new_stones[new_stone] += 1
-                else:
-                    new_stones[new_stone] = 1
+        for new_stone in new_stone_list:
+            if new_stone in new_stones:
+                new_stones[new_stone] += count
+            else:
+                new_stones[new_stone] = count
     return new_stones
 
 
