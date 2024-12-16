@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import re
+import math
 
 @dataclass
 class Position:
@@ -24,7 +25,7 @@ def read_input():
             button_b_position = Position(int(matches[0][0]), int(matches[0][1]))
             prize_regex = r"X=(\d+), Y=(\d+)"
             matches = re.findall(prize_regex, lines[i + 2])
-            prize_location = Position(int(matches[0][0]), int(matches[0][1]))
+            prize_location = Position(int(matches[0][0]) + 10000000000000, int(matches[0][1]) + 10000000000000)
             machines.append(Machine(button_a_position, button_b_position, prize_location))
     return machines
 
@@ -61,11 +62,24 @@ def brute_force_solver(machine):
                 min_solution = value
         return min_solution
 
+# Part 2 (Would also work for part 1)
+# There is only 1 actual solution, so we don't need to optimise - just find the solution and check if it is an integer solution
+def cramer_solver(machine):
+    a_presses = (machine.prize_location.X * machine.button_b.Y - machine.prize_location.Y * machine.button_b.X) / (machine.button_a.X * machine.button_b.Y - machine.button_a.Y * machine.button_b.X)
+    b_presses = (machine.button_a.X * machine.prize_location.Y - machine.button_a.Y * machine.prize_location.X) / (machine.button_a.X * machine.button_b.Y - machine.button_a.Y * machine.button_b.X)
+
+    if a_presses.is_integer() and b_presses.is_integer():
+        return 3 * a_presses + b_presses
+    else:
+        return None
+
+
 if __name__ == "__main__":
     machines = read_input()
     tokens = 0
     for machine in machines:
-        solution = brute_force_solver(machine)
+        # solution = brute_force_solver(machine) # Part 1
+        solution = cramer_solver(machine) # Part 2
         if solution is not None:
             tokens += solution
-    print(f"Total token: {tokens}")
+    print(f"Total tokens: {int(tokens)}")
