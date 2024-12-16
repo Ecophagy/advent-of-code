@@ -28,6 +28,44 @@ def read_input():
             machines.append(Machine(button_a_position, button_b_position, prize_location))
     return machines
 
+def brute_force_solver(machine):
+    # Find all possible solutions for X location
+    x_solutions = []
+    for i in range(101):
+        for j in range(101):
+            if i * machine.button_a.X + j * machine.button_b.X == machine.prize_location.X:
+                x_solutions.append((i, j))
+
+    # Find all possible solutions for Y location
+    y_solutions = []
+    for i in range(101):
+        for j in range(101):
+            if i * machine.button_a.Y + j * machine.button_b.Y == machine.prize_location.Y:
+                y_solutions.append((i, j))
+
+    # Find which X and Y solutions are both valid
+    matching_solutions = []
+    for solution in x_solutions:
+        if solution in y_solutions:
+            matching_solutions.append(solution)
+
+    if not matching_solutions:
+        # No solutions, so prize is not accessible
+        return None
+    else:
+        # Find minimal cost solution
+        min_solution = None
+        for solution in matching_solutions:
+            value = solution[0] * 3 + solution[1]
+            if min_solution is None or value < min_solution:
+                min_solution = value
+        return min_solution
+
 if __name__ == "__main__":
     machines = read_input()
-    print(machines)
+    tokens = 0
+    for machine in machines:
+        solution = brute_force_solver(machine)
+        if solution is not None:
+            tokens += solution
+    print(f"Total token: {tokens}")
