@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import re
 import math
+from tqdm import tqdm
 
 @dataclass
 class Position:
@@ -78,9 +79,33 @@ def draw_grid(robots):
                 print(".", end='')
         print("")
 
+
 if __name__ == "__main__":
+    # Part 1
     robots = read_input()
     for i in range(100):
         for r in range(len(robots)):
             robots[r] = move_robot(robots[r])
     print(calculate_safety_factor(robots))
+
+    # Part 2
+    # Assumption: The christmas tree will be in the middle of the screen, and will therefore have the highest
+    # (or nearly) highest safety factor in the centre.
+    # So find that iteration
+    robots = read_input()
+    max_centre_safety = 0
+    max_iteration = 0
+    for i in tqdm(range(GRID_WIDTH * GRID_HEIGHT)):
+        for r in range(len(robots)):
+            robots[r] = move_robot(robots[r])
+        centre_safety = calculate_quadrant_safety_factor(math.floor(GRID_HEIGHT/4), 3*math.floor(GRID_HEIGHT/4), math.floor(GRID_WIDTH/4), 3*math.floor(GRID_WIDTH/4), robots)
+        if centre_safety > max_centre_safety:
+            max_centre_safety = centre_safety
+            max_iteration = i
+
+    # Draw the grid for visual confirmation
+    robots = read_input()
+    for i in range(0, max_iteration + 1):
+        for r in range(len(robots)):
+            robots[r] = move_robot(robots[r])
+        draw_grid(robots)
